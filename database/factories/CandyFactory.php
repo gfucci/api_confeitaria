@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\CandyEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 use App\Models\Candy;
@@ -20,10 +21,12 @@ class CandyFactory extends Factory
      */
     public function definition(): array
     {
-        return [
-            'name' => $this->faker->name(),
-            'price' => $this->faker->randomFloat(2, 0, 99999999.99),
-            'unit' => $this->faker->randomElement(["ml","g","kg","slice"]),
+        $candies = [
+            'name' => $this->faker->randomElement(CandyEnum::getArrayValues()),
+            'price' => $this->faker->randomFloat(2, 0, 99.99)
         ];
+        $candies["unit"] = CandyEnum::getUnit($candies["name"]);
+
+        return $candies;
     }
 }

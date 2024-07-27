@@ -53,10 +53,10 @@ class CustomerController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id): JsonResponse
+    public function show(string $customer): JsonResponse
     {
         try {
-            $customer = Customer::findOrFail($id);
+            $customer = Customer::findOrFail($customer);
             $customer->orders;
         } catch (\Throwable $th) {
             return response()->json([
