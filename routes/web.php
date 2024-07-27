@@ -1,7 +1,6 @@
 <?php
 
+use App\Http\Controllers\CustomerController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    echo "API";
-});
+Route::apiResource('customer', CustomerController::class);

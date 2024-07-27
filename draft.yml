@@ -7,7 +7,7 @@ models:
       belongsToMany: Order
   Customer:
     name: string:200
-    phone: string:16
+    phone: string:25
     relationships:
       hasMany: Order
   Order:
