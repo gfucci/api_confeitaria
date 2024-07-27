@@ -1,0 +1,20 @@
+created:
+    - database/factories/CandyFactory.php
+    - database/factories/CustomerFactory.php
+    - database/factories/OrderFactory.php
+    - database/factories/OrderCandyFactory.php
+    - database/migrations/2024_07_27_194522_create_candies_table.php
+    - database/migrations/2024_07_27_194523_create_customers_table.php
+    - database/migrations/2024_07_27_194524_create_orders_table.php
+    - database/migrations/2024_07_27_194525_create_order_candies_table.php
+    - database/migrations/2024_07_27_194526_create_candy_order_table.php
+    - app/Models/Candy.php
+    - app/Models/Customer.php
+    - app/Models/Order.php
+    - app/Models/OrderCandy.php
+models:
+    User: { name: string, email: string, email_verified_at: 'timestamp nullable', password: string, remember_token: 'string:100 nullable' }
+    Candy: { name: 'string:300', price: 'decimal:10,2', unit: 'enum:ml,g,kg,slice', relationships: { belongsToMany: Order } }
+    Customer: { name: 'string:200', phone: 'string:16', relationships: { hasMany: Order } }
+    Order: { customer_id: 'id foreign', status: 'enum:pendente,concluido,cancelado', relationships: { belongsTo: Customer, belongsToMany: Candy } }
+    OrderCandy: { order_id: 'id foreign', candy_id: 'id foreign' }

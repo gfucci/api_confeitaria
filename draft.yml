@@ -1,0 +1,21 @@
+models:
+  Candy:
+    name: string:300
+    price: decimal:10,2
+    unit: enum:ml,g,kg,slice
+    relationships:
+      belongsToMany: Order
+  Customer:
+    name: string:200
+    phone: string:16
+    relationships:
+      hasMany: Order
+  Order:
+    customer_id: id foreign
+    status: enum:pendente,concluido,cancelado
+    relationships:
+      belongsTo: Customer
+      belongsToMany: Candy
+  OrderCandy:
+    order_id: id foreign
+    candy_id: id foreign
