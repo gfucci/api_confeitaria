@@ -95,4 +95,37 @@ class OrderTest extends TestCase
             ['order_id' => $createdOrder->id, 'candy_id' => $candy1->id]
         );
     }
+
+    public function test_show_order(): void
+    {
+        $customer = Customer::factory()->create();
+        $candy1 = Candy::factory()->create();
+        $order = Order::factory()->create(["customer_id" => $customer->id]);
+
+        $order->addCandy($candy1->id);
+
+        $response = $this->getJson(route('order.show', ['order'=> $order->id]));
+        
+        $response->assertOk();
+        $response->assertJson([
+            'message' => 'Pedido encontrado!',
+            'data' => [
+                'id' => $order->id,
+                'status' => $order->status,
+                'customer' => [
+                    'id' => $customer->id,
+                    'name' => $customer->name,
+                    'phone' => $customer->phone,
+                ],
+                'candies' => [
+                    [
+                        'id' => $candy1->id,
+                        'name' => $candy1->name,
+                        'price' => $candy1->price,
+                        'unit' => $candy1->unit,
+                    ]
+                ]
+            ]
+        ]);
+    }
 }

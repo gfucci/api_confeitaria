@@ -58,24 +58,21 @@ class OrderController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(string $order)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        try {
+            $orderData = Order::findOrFail($order);
+            $orderData->customer;
+            $orderData->candies;
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => "Não foi encontrado nenhum cliente!"
+            ], 400, [], JSON_UNESCAPED_UNICODE);
+        }
+        
+        return response()->json([
+            'message' => 'Pedido encontrado!',
+            'data' => $orderData
+        ], 200, []);
     }
 }
