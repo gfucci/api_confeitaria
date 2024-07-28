@@ -13,7 +13,7 @@ use Tests\TestCase;
 class OrderTest extends TestCase
 {
     use RefreshDatabase;
-    
+
     /**
      * A basic feature test example.
      */
@@ -68,8 +68,12 @@ class OrderTest extends TestCase
             ->withOtherStatus('pendente')
             ->make(["customer_id" => $customer->id]);
             
-        $orderData = $order->toArray();
-        $orderData["candy_id"] = $candy1->id;
+        $orderData = [
+            "customer_id" => $order->customer->id,
+            "candies" => [
+                $candy1->id
+            ]
+        ];
         $response = $this->postJson(route('order.store'), $orderData);
 
         $response->assertCreated();

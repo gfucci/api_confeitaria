@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreOrderRequest;
 use App\Models\Order;
 use Illuminate\Http\Request;
 
@@ -29,16 +30,19 @@ class OrderController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreOrderRequest $request)
     {
         try {
             $data = $request->all();
+            $candies = $data["candies"];
             $order = Order::create([
                 'customer_id' => $data['customer_id'],
                 'status' => "pendente",
             ]);
 
-            $order->addCandy($data["candy_id"]);
+            foreach ($candies as $candy_id => $value) {
+                $order->addCandy($value);
+            }
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => "Não foi possível adicionar o cliente!"
