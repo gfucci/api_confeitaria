@@ -6,6 +6,7 @@ use App\Enums\CandyEnum;
 use App\Models\Candy;
 use App\Models\Customer;
 use App\Models\Order;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -19,6 +20,8 @@ class OrderTest extends TestCase
      */
     public function test_get_all_orders(): void
     {
+        /** @var \Illuminate\Contracts\Auth\Authenticatable $user */
+        $user = User::factory()->create();
         $customer = Customer::factory()->create();
         $order = Order::factory()->create(["customer_id" => $customer->id]);
         $candy1 = Candy::factory()->create();
@@ -27,7 +30,7 @@ class OrderTest extends TestCase
         $order->addCandy($candy1->id);
         $order->addCandy($candy2->id);
 
-        $response = $this->getJson(route('order.index'));
+        $response = $this->actingAs($user)->getJson(route('order.index'));
 
         $response->assertOk();
         $response->assertJson([
@@ -62,6 +65,8 @@ class OrderTest extends TestCase
 
     public function test_store_order(): void
     {
+        /** @var \Illuminate\Contracts\Auth\Authenticatable $user */
+        $user = User::factory()->create();
         $customer = Customer::factory()->create();
         $candy1 = Candy::factory()->create();
         $order = Order::factory()
@@ -74,7 +79,7 @@ class OrderTest extends TestCase
                 $candy1->id
             ]
         ];
-        $response = $this->postJson(route('order.store'), $orderData);
+        $response = $this->actingAs($user)->postJson(route('order.store'), $orderData);
 
         $response->assertCreated();
         $response->assertJson([
@@ -98,13 +103,16 @@ class OrderTest extends TestCase
 
     public function test_show_order(): void
     {
+        /** @var \Illuminate\Contracts\Auth\Authenticatable $user */
+        $user = User::factory()->create();
         $customer = Customer::factory()->create();
         $candy1 = Candy::factory()->create();
         $order = Order::factory()->create(["customer_id" => $customer->id]);
 
         $order->addCandy($candy1->id);
 
-        $response = $this->getJson(route('order.show', ['order'=> $order->id]));
+        $response = $this->actingAs($user)
+            ->getJson(route('order.show', ['order'=> $order->id]));
         
         $response->assertOk();
         $response->assertJson([

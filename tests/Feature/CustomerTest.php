@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Customer;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -16,8 +17,11 @@ class CustomerTest extends TestCase
      */
     public function test_get_all_customers(): void
     {
+        $user = User::factory()->create();
         $customer = Customer::factory()->create();
-        $response = $this->getJson(route('customer.index'));
+
+        /** @var \Illuminate\Contracts\Auth\Authenticatable $user */
+        $response = $this->actingAs($user)->getJson(route('customer.index'));
 
         $response->assertOk();
         $response->assertJson([
@@ -32,10 +36,13 @@ class CustomerTest extends TestCase
 
     public function test_store_customer(): void
     {
+        /** @var \Illuminate\Contracts\Auth\Authenticatable $user */
+        $user = User::factory()->create();
+        $customer = Customer::factory()->create();
         $newCustomerData = Customer::factory()->make();
         $customer =  $newCustomerData->toArray();
 
-        $response = $this->postJson(
+        $response = $this->actingAs($user)->postJson(
             route('customer.store'),
             $customer
         );
@@ -52,8 +59,11 @@ class CustomerTest extends TestCase
 
     public function test_show_customer(): void
     {
+        /** @var \Illuminate\Contracts\Auth\Authenticatable $user */
+        $user = User::factory()->create();
         $customer = Customer::factory()->hasOrders(2)->create();
-        $response = $this->getJson(route('customer.show', ['customer'=> $customer->id]));
+        $response = $this->actingAs($user)
+            ->getJson(route('customer.show', ['customer'=> $customer->id]));
         
         $response->assertOk();
         $response->assertJson([
@@ -77,10 +87,13 @@ class CustomerTest extends TestCase
 
     public function test_update_customer(): void
     {
+        /** @var \Illuminate\Contracts\Auth\Authenticatable $user */
+        $user = User::factory()->create();
+
         $customerCurrentData = Customer::factory()->create();
         $newCustomer = Customer::factory()->make();
         $newCustomerArray = $newCustomer->toArray();
-        $response = $this->putJson(
+        $response = $this->actingAs($user)->putJson(
             route('customer.update', $customerCurrentData),
             $newCustomerArray
         );
@@ -97,9 +110,11 @@ class CustomerTest extends TestCase
 
     public function test_delete_customer(): void
     {
+        $user = User::factory()->create();
         $customer = Customer::factory()->create();
 
-        $this->deleteJson(route('customer.destroy', ['customer'=> $customer->id]));
+        /** @var \Illuminate\Contracts\Auth\Authenticatable $user */
+        $this->actingAs($user)->deleteJson(route('customer.destroy', ['customer'=> $customer->id]));
         $this->assertDatabaseMissing('customers', $customer->toArray());
     }
 }

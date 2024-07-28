@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Candy;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Tests\TestCase;
@@ -16,9 +17,11 @@ class CandyTest extends TestCase
      */
     public function test_get_all_candies(): void
     {
+        /** @var \Illuminate\Contracts\Auth\Authenticatable $user */
+        $user = User::factory()->create();
         $data = [];
         $candies = Candy::factory(10)->create();
-        $response = $this->getJson(route('candy.index'));
+        $response = $this->actingAs($user)->getJson(route('candy.index'));
 
         foreach ($candies as $key => $candy) {
             $data[] = [
@@ -34,8 +37,10 @@ class CandyTest extends TestCase
 
     public function test_show_candy(): void
     {
+        /** @var \Illuminate\Contracts\Auth\Authenticatable $user */
+        $user = User::factory()->create();
         $candy = Candy::factory()->create();
-        $response = $this->getJson(route('candy.show', ['candy'=> $candy->id]));
+        $response = $this->actingAs($user)->getJson(route('candy.show', ['candy'=> $candy->id]));
         
         $response->assertOk();
         $response->assertJson([
