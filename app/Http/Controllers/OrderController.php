@@ -50,7 +50,7 @@ class OrderController extends Controller
         }
 
         return response()->json([
-            'message' => 'Cliente criado com sucesso!',
+            'message' => 'Pedido criado com sucesso!',
             'data' => $order
         ], 201);
     }

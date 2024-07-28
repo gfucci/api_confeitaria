@@ -40,6 +40,7 @@ class AuthController extends Controller
 
         $token = $user->createToken('usuario_logado')->plainTextToken;
         $response = [
+            'message' => 'login efetuado!',
             'user' => $user,
             'token' => $token
         ];

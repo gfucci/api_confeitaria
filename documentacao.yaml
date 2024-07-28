@@ -1,0 +1,337 @@
+openapi: 3.0.0
+info:
+  title: Confeitaria API
+  version: 1.0.0
+  description: API para gerenciamento de uma confeitaria
+servers:
+  - url: http://localhost:8000/api
+    description: Servidor local
+tags:
+  - name: auth
+    description: Secured Admin-only calls
+  - name: candy
+    description: Operations available to regular developers
+  - name: customer
+    description: Operations available to regular developers
+  - name: order
+    description: Operations available to regular developers
+paths:
+  /register:
+    post:
+      tags:
+        - auth
+      summary: Registro da API
+      description: Faz o registro do usuário da API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+      responses:
+        "201":
+          description: Usuário criado!
+  /login:
+    post:
+      tags:
+        - auth
+      summary: Login da API
+      description: Retorna o token para autenticação da API
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+      responses:
+        "200":
+          description: Login efetuado!
+        "401":
+          description: "E-mail ou senha inválidos"
+  /logout:
+    post:
+      tags:
+        - auth
+      summary: Logout da API
+      description: Faz o logout da API
+      responses:
+        "200":
+          description: Deslogado com sucesso!
+  /customers:
+    get:
+      summary: Lista todos os clientes
+      tags:
+        - customer
+      responses:
+        '200':
+          description: Lista de clientes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+    post:
+      summary: Cria um novo cliente
+      tags:
+        - customer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        '201':
+          description: Cliente criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+  /customers/{customer}:
+    get:
+      summary: Exibe um cliente específico
+      tags:
+        - customer
+      parameters:
+        - in: path
+          name: customer
+          required: true
+          schema:
+            type: integer
+          description: ID do cliente
+      responses:
+        '200':
+          description: Dados do cliente
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+    put:
+      summary: Atualiza um cliente específico
+      tags:
+        - customer
+      parameters:
+        - in: path
+          name: customer
+          required: true
+          schema:
+            type: integer
+          description: ID do cliente
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Customer'
+      responses:
+        '200':
+          description: Cliente atualizado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Customer'
+    delete:
+      summary: Remove um cliente específico
+      tags:
+        - customer
+      parameters:
+        - in: path
+          name: customer
+          required: true
+          schema:
+            type: integer
+          description: ID do cliente
+      responses:
+        '204':
+          description: Cliente removido
+  /candy:
+    get:
+      summary: Lista todos os doces
+      tags:
+        - candy
+      responses:
+        '200':
+          description: Lista de doces
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Candy'
+  /candy/{candy}:
+    get:
+      summary: Exibe um doce específico
+      tags:
+        - candy
+      parameters:
+        - in: path
+          name: candy
+          required: true
+          schema:
+            type: integer
+          description: ID do doce
+      responses:
+        '200':
+          description: Dados do doce
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Candy'
+  /orders:
+    get:
+      summary: Lista todos os pedidos
+      tags:
+        - order
+      responses:
+        '200':
+          description: Lista de pedidos
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+    post:
+      summary: Cria um novo pedido
+      tags:
+        - order
+      response:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Order'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                customer_id:
+                  required: true
+                  type: integer
+                candies:
+                  required: true
+                  type: array
+      responses:
+        '201':
+          description: Pedido criado
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+  /orders/{order}:
+    get:
+      summary: Exibe um pedido específico
+      tags:
+        - order
+      parameters:
+        - in: path
+          name: order
+          required: true
+          schema:
+            type: integer
+          description: ID do pedido
+      responses:
+        '200':
+          description: Dados do pedido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+components:
+  schemas:
+    Register:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        password_confirmation:
+          type: string
+      required:
+        - name
+        - email
+        - password
+        - password_confirmation
+
+    Login:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+
+    Logout:
+      type: object
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        email_verified_at:
+          type: string
+
+    Customer:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        phone:
+          type: string
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/Order'
+    
+    Order:
+      type: object
+      properties:
+        id:
+          type: integer
+        customer_id:
+          type: integer
+        status:
+          type: string
+          enum:
+            - pendente
+            - concluido
+            - cancelado
+        candies:
+          type: array
+          items:
+            $ref: '#/components/schemas/Candy'
+        customer:
+          $ref: '#/components/schemas/Customer'
+
+    Candy:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+          format: float
+        unit:
+          type: string
+          enum:
+            - ml
+            - g
+            - kg
+            - slice
