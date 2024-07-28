@@ -4,8 +4,11 @@ info:
   version: 1.0.0
   description: API para gerenciamento de uma confeitaria
 servers:
-  - url: http://localhost:8000/api
-    description: Servidor local
+  - description: Servidor local
+    url: http://http://127.0.0.1:8000/:8000/api
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/GFUCCI2005/api_doceria/1.0.0
 tags:
   - name: auth
     description: Secured Admin-only calls
@@ -48,15 +51,6 @@ paths:
           description: Login efetuado!
         "401":
           description: "E-mail ou senha inválidos"
-  /logout:
-    post:
-      tags:
-        - auth
-      summary: Logout da API
-      description: Faz o logout da API
-      responses:
-        "200":
-          description: Deslogado com sucesso!
   /customers:
     get:
       summary: Lista todos os clientes
@@ -80,7 +74,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Customer'
+              type: object
+              properties:
+                name:
+                  type: string
+                phone:
+                  type: string
+              required:
+                - name
+                - phone
       responses:
         '201':
           description: Cliente criado
@@ -123,7 +125,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Customer'
+              type: object
+              properties:
+                name:
+                  type: string
+                phone:
+                  type: string
+              required:
+                - name
+                - phone
       responses:
         '200':
           description: Cliente atualizado
@@ -196,23 +206,25 @@ paths:
       summary: Cria um novo pedido
       tags:
         - order
-      response:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Order'
       requestBody:
         required: true
         content:
           application/json:
             schema:
+              type: object
               properties:
                 customer_id:
-                  required: true
                   type: integer
                 candies:
-                  required: true
                   type: array
+                  items:
+                    type: object
+                    properties:
+                      candy_id:
+                        type: integer
+              required:
+                - customer_id
+                - candies
       responses:
         '201':
           description: Pedido criado
@@ -268,9 +280,6 @@ components:
       required:
         - email
         - password
-
-    Logout:
-      type: object
 
     User:
       type: object

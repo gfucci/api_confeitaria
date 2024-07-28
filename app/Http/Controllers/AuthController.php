@@ -47,13 +47,4 @@ class AuthController extends Controller
 
         return response($response, 200);
     }
-
-    public function logout()
-    {
-        auth()->user()->tokens()->delete();
-
-        return response([
-            'message' => 'Deslogado com sucesso!'
-        ], 200);
-    }
 }
