@@ -30,7 +30,7 @@ class CustomerTest extends TestCase
         ]);
     }
 
-    public function test_store_customer()
+    public function test_store_customer(): void
     {
         $newCustomerData = Customer::factory()->make();
         $customer =  $newCustomerData->toArray();
@@ -50,7 +50,7 @@ class CustomerTest extends TestCase
         $this->assertDatabaseHas('customers', $customer);
     }
 
-    public function test_show_customer()
+    public function test_show_customer(): void
     {
         $customer = Customer::factory()->hasOrders(2)->create();
         $response = $this->getJson(route('customer.show', ['customer'=> $customer->id]));
@@ -75,7 +75,7 @@ class CustomerTest extends TestCase
         ]);
     }
 
-    public function test_update_customer()
+    public function test_update_customer(): void
     {
         $customerCurrentData = Customer::factory()->create();
         $newCustomer = Customer::factory()->make();
@@ -95,7 +95,7 @@ class CustomerTest extends TestCase
         $this->assertDatabaseHas('customers', $newCustomerArray);
     }
 
-    public function test_delete_customer()
+    public function test_delete_customer(): void
     {
         $customer = Customer::factory()->create();
 

@@ -38,6 +38,16 @@ class Order extends Model
 
     public function candies(): BelongsToMany
     {
-        return $this->belongsToMany(Candy::class);
+        return $this->belongsToMany(Candy::class, 'order_candies');
+    }
+
+    public function addCandy(int $candy_id): void
+    {
+        $this->candies()->attach($candy_id);
+    }
+
+    public function removeCandy(int $candy_id): void
+    {
+        $this->candies()->detach($candy_id);
     }
 }

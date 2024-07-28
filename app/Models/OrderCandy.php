@@ -10,6 +10,8 @@ class OrderCandy extends Model
 {
     use HasFactory;
 
+    protected $table = "order_candies";
+
     /**
      * The attributes that are mass assignable.
      *

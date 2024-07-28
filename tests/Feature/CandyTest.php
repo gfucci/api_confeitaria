@@ -32,7 +32,7 @@ class CandyTest extends TestCase
         $response->assertJson(['data' => $data]);
     }
 
-    public function test_show_candy()
+    public function test_show_candy(): void
     {
         $candy = Candy::factory()->create();
         $response = $this->getJson(route('candy.show', ['candy'=> $candy->id]));

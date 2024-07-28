@@ -26,4 +26,11 @@ class OrderFactory extends Factory
             'status' => $this->faker->randomElement(["pendente","concluido","cancelado"]),
         ];
     }
+
+    public function withOtherStatus(string $status): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'status' => "pendente",
+        ]);
+    }
 }
